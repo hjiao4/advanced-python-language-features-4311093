@@ -14,8 +14,11 @@
 #   allowable cover types are "hard" and "paperback". Replace the existing
 #   "Hard" and "paperback" strings with the enum.
 # 4) Implement an "adjustedprice" computed attribute - books that are antiques
-#   have a 10.00 surcharge on their price, Paperback books get a 2.00 discount
+#   have a 10.00 surcharge on their price, CoverType.PAPERBACK books get a 2.00 discount
 # 5) Successfully execute the sample code provided below.
+
+from enum import Enum
+from typing import Any
 
 
 class Book():
@@ -23,29 +26,72 @@ class Book():
         self.title = title
         self.author = author
         self.pages = pages
-        self.cover = cover
+        if cover == "Hard":
+            self.cover = CoverType.HARD
+        elif cover == "Paperback":
+            self.cover = CoverType.PAPERBACK
+        else:
+            self.cover = CoverType.UNKNOWN
         self.antique = antique
         self.price = price
 
     # TODO: Implement the str and repr functions
+    def __str__(self) -> str:
+        return f"{self.title} by {self.author}: {self.pages}, {self.cover}, {self.price}"
+
+    def __repr__(self) -> str:
+        return f"<Book:{self.title}:{self.author}:{self.pages}:{self.cover}:{self.antique}:{self.price}>"
 
     # TODO: Implement the adjustedprice attribute
+    # NOTE: Difference between __getattribute__ vs. __getattr__
+    def __getattr__(self, attr: str) -> Any:
+        if attr == "adjustedprice":
+            adjustedprice = self.price
+            if self.antique:
+                adjustedprice += 10.0
+            if self.cover == CoverType.PAPERBACK:
+                adjustedprice -= 2.0
+            return adjustedprice
+        else:
+            raise AttributeError(f"{attr} is not a valid attribution")
 
     # TODO: Implement comparisons <, >, <=, >=
+    def __lt__(self, other):
+        return self.pages < other.pages
+
+    def __gt__(self, other):
+        return self.pages > other.pages
+
+    def __le__(self, other):
+        return self.pages <= other.pages
+
+    def __ge__(self, other):
+        return self.pages >= other.pages
 
 
-# TODO: Implement the Hard/Paperback Enum
+# TODO: Implement the HARD/PAPERBACK Enum
+class CoverType(Enum):
+    HARD = 1
+    PAPERBACK = 2
+    UNKNOWN = 3
 
 
 books = [
-    Book("War and Peace", "Leo Tolstoy", 1225, "Hard", True, 29.95),
-    Book("Brave New World", "Aldous Huxley", 311, "Paperback", True, 32.50),
-    Book("Crime and Punishment", "Fyodor Dostoevsky", 492, "Hard", False, 19.75),
-    Book("Moby Dick", "Herman Melville", 427, "Paperback", True, 22.95),
-    Book("A Christmas Carol", "Charles Dickens", 66, "Hard", False, 31.95),
-    Book("Animal Farm", "George Orwell", 130, "Paperback", False, 26.95),
+    Book("War and Peace", "Leo Tolstoy", 1225,
+         "Hard", True, 29.95),
+    Book("Brave New World", "Aldous Huxley", 311,
+         "Paperback", True, 32.50),
+    Book("Crime and Punishment", "Fyodor Dostoevsky",
+         492, "Hard", False, 19.75),
+    Book("Moby Dick", "Herman Melville", 427,
+         "Paperback", True, 22.95),
+    Book("A Christmas Carol", "Charles Dickens",
+         66, "Hard", False, 31.95),
+    Book("Animal Farm", "George Orwell", 130,
+         "Paperback", False, 26.95),
     Book("Farenheit 451", "Ray Bradbury", 256, "Hard", True, 28.95),
-    Book("Jane Eyre", "Charlotte Bronte", 536, "Paperback", False, 34.95)
+    Book("Jane Eyre", "Charlotte Bronte", 536,
+         "Paperback", False, 34.95)
 ]
 
 # TEST CODE

@@ -3,11 +3,19 @@
 
 
 # TODO: define a function that takes variable arguments
-def addition():
-    pass
+from audioop import add
+
+
+def addition(*args):
+    result = 0
+    for arg in args:
+        result += arg
+    return result
 
 
 # TODO: pass different arguments
-print(addition())
+print(addition(1, 2, 3, 4))
 
 # TODO: pass an existing list
+my_nums = [1, 2, 3, 4]
+print(addition(*my_nums))

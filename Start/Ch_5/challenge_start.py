@@ -39,3 +39,34 @@ test_orders = [
 ]
 
 # TODO: process each order
+for order in test_orders:
+    print("============")
+    total = 0
+    for item in order:
+        match item:
+            case "shirt" | "pants" | "jacket" | "dress" as garment, size, starch, same_day:
+                s = f"Dry Clean: ({size}) {garment}"
+                total += 12.95
+                if starch:
+                    s += " Starched"
+                    total += 2
+                if same_day:
+                    s += " Same-day"
+                    total += 10
+                print(s)
+            case description, weight:
+                if weight <= 15:
+                    total += 4.95*weight
+                else:
+                    total += 4.95*weight*0.9
+                print(f"Wash/Fold: {description}, weight: {weight}")
+            case "comforter" | "cover" as blanket, dryclean, size:
+                total += 25
+                if dryclean:
+                    print(f"Blanket: ({size}) {blanket} Dry clean")
+                else:
+                    print(f"Blanket: ({size}) {blanket}")
+            case _:
+                print("Unrecognized")
+    print(f"Order total: {total}")
+    print("============")

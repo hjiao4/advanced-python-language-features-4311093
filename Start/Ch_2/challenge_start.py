@@ -13,10 +13,20 @@
 
 
 def string_combiner(*args, unique=False):
+    """
+    TO-DO
+    """
     result = ""
-
-    # YOUR CODE HERE
-
+    tracker = set()
+    for arg in args:
+        if isinstance(arg, (str, int, bool)):
+            if unique:
+                for c in str(arg):
+                    if c not in tracker:
+                        result += c
+                        tracker.add(c)
+            else:
+                result += str(arg)
     return result
 
 
